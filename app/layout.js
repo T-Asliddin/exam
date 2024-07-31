@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer";
 import Hero from "@/app/components/hero"
-// import Home from "@/app/home";
 
 import "./globals.css";
 

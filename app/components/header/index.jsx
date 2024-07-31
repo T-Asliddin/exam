@@ -1,9 +1,19 @@
 "use client";
 import Image from "next/image";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-
+import React, { useState } from "react";
+import { Drawer } from "antd";
+import Link from "next/link";
 
 const Index = () => {
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
   return (
     <header className="bg-[#1F1D14]">
       <div className="flex items-center container justify-between p-3 max-[800px]:justify-between">
@@ -28,7 +38,9 @@ const Index = () => {
               <li>Продукты</li>
               <li>Контакты</li>
               <li>Оплата и Доставка</li>
-              <li>Новости</li>
+              <li>
+                <Link href="/info">Новости</Link>
+              </li>
               <li>О нас</li>
             </ul>
           </nav>
@@ -61,9 +73,38 @@ const Index = () => {
         </div>
         <div className="text-white hidden max-[800px]:block">
           <MenuOutlinedIcon
+            onClick={showDrawer}
             style={{ fontSize: 45 }}
             color="inherit"
           />
+          <Drawer
+            className=" bg-black"
+            title="Menu"
+            onClose={onClose}
+            open={open}
+          >
+            <div className="">
+              <nav>
+                <ul className="text-black  font-medium  text-[22px] gap-[30px] ">
+                  <li className="mb-3">Продукты</li>
+                  <li className="mb-3">Контакты</li>
+                  <li className="mb-3">Оплата и Доставка</li>
+                  <li className="mb-3"> <Link href="/info">Новости</Link></li>
+                  <li className="mb-7">
+                    О нас
+                  </li>
+                </ul>
+                <div className="gap-5">
+                  <p className="text-black text-[18px] mb-3 font-medium ">
+                    +998 (90) <span className="text-[20px]">565-85-85</span>
+                  </p>
+                  <p className="text-[18px] text-black font-medium">
+                    info@gmail.com
+                  </p>
+                </div>
+              </nav>
+            </div>
+          </Drawer>
         </div>
       </div>
     </header>

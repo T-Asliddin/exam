@@ -17,6 +17,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "antd": "^5.19.3",
+    "antd-style": "^3.6.2",
     "framer-motion": "^11.3.19",
     "next": "14.2.5",
     "react": "^18",

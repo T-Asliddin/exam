@@ -2,7 +2,6 @@
 import Swiper from "@/app/components/swiper";
 import Image from "next/image";
 import ProductList from "./components/product";
-import img from "../public/kiyim.png";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
@@ -85,15 +84,15 @@ export default function Home() {
               >
                 <div>
                   <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
-                    <Image className="mb-5" src={img} alt="nimadir"></Image>
+                    <Image className="mb-5" src={item.image} alt="nimadir"></Image>
                     <FontAwesomeIcon
                       icon={faHeart}
                       className="w-[26px] absolute right-[14px] top-[10px] text-red-500 "
                     />
                     <h2 className="mb-6 text-[20px] font-medium">
-                      Бутса Nike Mercurial Superfly 8 FG
+                      {item.name}
                     </h2>
-                    <p className="text-[20px] font-bold">500 000 uzs</p>
+                    <p className="text-[20px] font-bold">{item.price} uzs</p>
                   </div>
                   <button className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]">
                     <ShoppingCartOutlinedIcon className="mr-[6px]" />
