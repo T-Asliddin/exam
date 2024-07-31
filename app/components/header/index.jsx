@@ -35,7 +35,9 @@ const Index = () => {
         <div className="max-[1150px]:mr-[30px] max-[800px]:hidden">
           <nav>
             <ul className="text-white flex text-[16px] gap-[30px]">
-              <li>Продукты</li>
+              <li>
+                <Link href="/product">Продукты</Link>
+              </li>
               <li>Контакты</li>
               <li>Оплата и Доставка</li>
               <li>
@@ -86,13 +88,16 @@ const Index = () => {
             <div className="">
               <nav>
                 <ul className="text-black  font-medium  text-[22px] gap-[30px] ">
-                  <li className="mb-3">Продукты</li>
+                  <li>
+                    <Link href="/product">Продукты</Link>
+                  </li>
                   <li className="mb-3">Контакты</li>
                   <li className="mb-3">Оплата и Доставка</li>
-                  <li className="mb-3"> <Link href="/info">Новости</Link></li>
-                  <li className="mb-7">
-                    О нас
+                  <li className="mb-3">
+                    {" "}
+                    <Link href="/info">Новости</Link>
                   </li>
+                  <li className="mb-7">О нас</li>
                 </ul>
                 <div className="gap-5">
                   <p className="text-black text-[18px] mb-3 font-medium ">
