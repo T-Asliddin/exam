@@ -5,6 +5,8 @@ import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutl
 import Image from "next/image";
 import { useState } from "react";
 import { Input } from "antd";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+
 
 const Index = () => {
   const [num, setNum] = useState(1);

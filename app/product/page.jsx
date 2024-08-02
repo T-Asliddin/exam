@@ -11,6 +11,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Image from "next/image";
 import Link from "next/link";
+
 function valuetext(value) {
   return `${value}°C`;
 }
