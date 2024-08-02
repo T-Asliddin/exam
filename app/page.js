@@ -9,8 +9,24 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
-
+import product from "@/service/product.service";
+import { useEffect, useState } from "react";
 export default function Home() {
+  const [data, setData] = useState([]);
+  const getData = async () => {
+    try {
+      const response = await product.get({ page: 1, limit: 10 });
+      if (response.status === 200 && response.data.products !== null) {
+        setData(response.data.products);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -78,26 +94,26 @@ export default function Home() {
             Продукты
           </h1>
           <div className="grid  grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-x-[24px] gap-y-8 place-items-center">
-            {ProductList.map((item, index) => (
+            {data?.map((item, index) => (
               <div
                 key={index}
-                className="max-w-[292px] bg-[#FFF] rounded-md relative"
+                className="max-w-[292px] bg-[#FFF] rounded-md relative "
               >
                 <div>
                   <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
-                    <Image
-                      className="mb-5"
-                      src={item.image}
+                    <img
+                      className="mb-5 h-[250px]"
+                      src={item?.image_url ? item.image_url[1] : ""}
                       alt="nimadir"
-                    ></Image>
+                    />
                     <FontAwesomeIcon
                       icon={faHeart}
                       className="w-[26px] absolute right-[14px] top-[10px] text-red-500 "
                     />
                     <h2 className="mb-6 text-[20px] font-medium">
-                      {item.name}
+                      {item.product_name}
                     </h2>
-                    <p className="text-[20px] font-bold">{item.price} uzs</p>
+                    <p className="text-[20px] font-bold">{item.cost} uzs</p>
                   </div>
                   <Link
                     className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"

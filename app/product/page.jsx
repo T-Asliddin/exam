@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import Box from "@mui/material/Box";
@@ -11,13 +10,27 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Image from "next/image";
 import Link from "next/link";
-
+import product from "@/service/product.service";
+import { useEffect, useState } from "react";
 function valuetext(value) {
   return `${value}°C`;
 }
 const Index = () => {
-  const [value, setValue] = React.useState([20, 37]);
-
+  const [value, setValue] = useState([20, 37]);
+  const [data, setData] = useState([]);
+  const getData = async () => {
+    try {
+      const response = await product.get({ page: 1, limit: 10 });
+      if (response.status === 200 && response.data.products !== null) {
+        setData(response.data.products);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -83,37 +96,37 @@ const Index = () => {
             </div>
 
             <div className="gap-x-6 gap-y-8 flex flex-wrap justify-center mt-5 mb-[50px]  ">
-              {ProductList.map((item, index) => (
-                <div
-                  key={index}
-                  className="max-w-[280px]  bg-[#FFF] rounded-md relative"
-                >
-                  <div>
-                    <div className="pt-[25px] pr-5 pb-[27px] pl-5">
-                      <Image
-                        className="mb-5"
-                        src={item.image}
-                        alt="nimadir"
-                      ></Image>
-                      <FontAwesomeIcon
-                        icon={faHeart}
-                        className="w-[26px] absolute right-[14px] top-[10px] text-red-500 "
-                      />
-                      <h2 className="mb-6 text-[20px] font-medium">
-                        {item.name}
-                      </h2>
-                      <p className="text-[20px] font-bold">{item.price} uzs</p>
-                    </div>
-
-                    <Link
-                      className="bg-[#FBD029] px-[81px] py-[15px] rounded-b-md  text-[20px] "
-                      href="/korzinka"
-                    >
-                      <ShoppingCartOutlinedIcon className="mr-[5px]" /> Корзина
-                    </Link>
+            {data?.map((item, index) => (
+              <div
+                key={index}
+                className="max-w-[280px] bg-[#FFF] rounded-md relative "
+              >
+                <div>
+                  <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
+                    <img
+                      className="mb-5 h-[250px]"
+                      src={item?.image_url && item.image_url[1] }
+                      alt="nimadir"
+                    />
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="w-[26px] absolute right-[14px] top-[10px] text-red-500 "
+                    />
+                    <h2 className="mb-6 text-[20px] font-medium">
+                      {item.product_name}
+                    </h2>
+                    <p className="text-[20px] font-bold">{item.cost} uzs</p>
                   </div>
+                  <Link
+                    className="bg-[#FBD029] px-[80px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
+                    href="/korzinka"
+                  >
+                    {" "}
+                    <ShoppingCartOutlinedIcon /> Корзина
+                  </Link>
                 </div>
-              ))}
+              </div>
+            ))}
 
               <div>
                 <Button className="bg-[#FFF]   text-[20px] font-medium h-[54px] max-[1100px]:hidden ">
