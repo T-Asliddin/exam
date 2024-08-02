@@ -8,6 +8,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Link from "next/link";
 
 export default function Home() {
   const settings = {
@@ -84,7 +85,11 @@ export default function Home() {
               >
                 <div>
                   <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
-                    <Image className="mb-5" src={item.image} alt="nimadir"></Image>
+                    <Image
+                      className="mb-5"
+                      src={item.image}
+                      alt="nimadir"
+                    ></Image>
                     <FontAwesomeIcon
                       icon={faHeart}
                       className="w-[26px] absolute right-[14px] top-[10px] text-red-500 "
@@ -94,10 +99,13 @@ export default function Home() {
                     </h2>
                     <p className="text-[20px] font-bold">{item.price} uzs</p>
                   </div>
-                  <button className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]">
-                    <ShoppingCartOutlinedIcon className="mr-[6px]" />
-                    Корзина
-                  </button>
+                  <Link
+                    className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
+                    href="/korzinka"
+                  >
+                    {" "}
+                    <ShoppingCartOutlinedIcon /> Корзина
+                  </Link>
                 </div>
               </div>
             ))}
@@ -124,20 +132,50 @@ export default function Home() {
       <section>
         <div className="slider-container container bg-white mt-[81px] mb-[80px] py-11 items-center">
           <Slider className="items-center " {...settings}>
-            <div >
-              <Image className="w-[74px]" src="/puma.png" alt="" width={100} height={100} />
+            <div>
+              <Image
+                className="w-[74px]"
+                src="/puma.png"
+                alt=""
+                width={100}
+                height={100}
+              />
             </div>
             <div>
-            <Image className="w-[57px]" src="/chanel.png" alt="" width={100} height={100} />
+              <Image
+                className="w-[57px]"
+                src="/chanel.png"
+                alt=""
+                width={100}
+                height={100}
+              />
             </div>
             <div>
-            <Image className="w-[79px]" src="/nike.png" alt="" width={100} height={100} />
+              <Image
+                className="w-[79px]"
+                src="/nike.png"
+                alt=""
+                width={100}
+                height={100}
+              />
             </div>
-            <div >
-              <Image className="w-[83px]" src="/rebook.png" alt="" width={100} height={100} />
+            <div>
+              <Image
+                className="w-[83px]"
+                src="/rebook.png"
+                alt=""
+                width={100}
+                height={100}
+              />
             </div>
-            <div >
-              <Image className="w-[74px]" src="/adidas.png" alt="" width={100} height={100} />
+            <div>
+              <Image
+                className="w-[74px]"
+                src="/adidas.png"
+                alt=""
+                width={100}
+                height={100}
+              />
             </div>
           </Slider>
         </div>

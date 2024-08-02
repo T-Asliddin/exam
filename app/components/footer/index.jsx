@@ -2,6 +2,7 @@
 import React from "react";
 import { Button, Input } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 
 const Index = () => {
   return (
@@ -9,7 +10,8 @@ const Index = () => {
       <div className="bg-[#1F1D14] border-t-[24px] border-[#FBD029] pb-6">
         <div className="container">
           <div className="flex pt-[73px] justify-between items-start  gap-2">
-            <div className="flex items-center gap-[11px]">
+          <Link href="/">
+          <div className="flex items-center gap-[11px]">
               <div className="w-[62px]">
                 <Image
                   src="/logo.svg"
@@ -23,7 +25,7 @@ const Index = () => {
                   Sport Market
                 </h1>
               </div>
-            </div>
+            </div>  </Link>
             <div className="max-w-[220px] max-[760px]:hidden ">
               <h1 className="text-[18px] text-[#fff] mb-5">Контакты</h1>
               <div className="">

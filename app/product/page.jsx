@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Image from "next/image";
-
+import Link from "next/link";
 function valuetext(value) {
   return `${value}°C`;
 }
@@ -76,7 +76,7 @@ const Index = () => {
                   placeholder="Все"
                 />
               </div>
-              <Button className="bg-[#E4E4E4] w-[280px] ">
+              <Button className="bg-[#E4E4E4] w-[280px] font-semibold ">
                 Показать результат
               </Button>
             </div>
@@ -103,18 +103,21 @@ const Index = () => {
                       </h2>
                       <p className="text-[20px] font-bold">{item.price} uzs</p>
                     </div>
-                    <button className="bg-[#FBD029] px-[85px] py-[15px] rounded-b-md  text-[20px]  ">
-                      <ShoppingCartOutlinedIcon className="mr-[6px]" />
-                      Корзина
-                    </button>
+
+                    <Link
+                      className="bg-[#FBD029] px-[81px] py-[15px] rounded-b-md  text-[20px] "
+                      href="/korzinka"
+                    >
+                      <ShoppingCartOutlinedIcon className="mr-[5px]" /> Корзина
+                    </Link>
                   </div>
                 </div>
               ))}
 
               <div>
-              <Button className="bg-[#FFF]   text-[20px] font-medium h-[54px] ">
-                Показать ещё
-              </Button>
+                <Button className="bg-[#FFF]   text-[20px] font-medium h-[54px] max-[1100px]:hidden ">
+                  Показать ещё
+                </Button>
               </div>
             </div>
           </div>

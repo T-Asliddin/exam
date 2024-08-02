@@ -26,15 +26,15 @@ export default function App() {
         >
           <SwiperSlide>
             <Image
-              src="/img2.jpg"
+              src="/img.jpg"
               alt="Example Image"
-              width={10}
+              width={1000}
               height={100}
             />
           </SwiperSlide>
           <SwiperSlide>
           
-            <Image src="/img.jpg" alt="Example Image" width={10} height={100} />
+            <Image src="/img2.jpg" alt="Example Image" width={1000} height={100} />
           </SwiperSlide>
         </Swiper>
       </div>

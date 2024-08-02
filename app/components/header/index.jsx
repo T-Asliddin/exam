@@ -17,21 +17,23 @@ const Index = () => {
   return (
     <header className="bg-[#1F1D14]">
       <div className="flex items-center container justify-between p-3 max-[800px]:justify-between">
-        <div className="flex items-center gap-[11px]">
-          <div className="w-16">
-            <Image
-              src="/logo.svg"
-              alt="Example Image"
-              width={100}
-              height={100}
-            />
-          </div>
-          <div>
-            <h1 className="text-white text-[24px] w-[116px] font-sans font-normal">
-              Sport Market
-            </h1>
-          </div>
-        </div>
+        <Link href='/'>
+          <div className="flex items-center gap-[11px]">
+            <div className="w-16">
+              <Image
+                src="/logo.svg"
+                alt="Example Image"
+                width={100}
+                height={100}
+              />
+            </div>
+            <div>
+              <h1 className="text-white text-[24px] w-[116px] font-sans font-normal">
+                Sport Market
+              </h1>
+            </div>
+          </div>{" "}
+        </Link>
         <div className="max-[1150px]:mr-[30px] max-[800px]:hidden">
           <nav>
             <ul className="text-white flex text-[16px] gap-[30px]">
@@ -39,11 +41,17 @@ const Index = () => {
                 <Link href="/product">Продукты</Link>
               </li>
               <li>Контакты</li>
-              <li>Оплата и Доставка</li>
               <li>
-                <Link href="/info">Новости</Link>
+                {" "}
+                <Link href="/delivery">Оплата и Доставка</Link>
               </li>
-              <li>О нас</li>
+              <li>
+                <Link href="/news">Новости</Link>
+              </li>
+              <li className="mb-7">
+                {" "}
+                <Link href="/info">О нас</Link>
+              </li>
             </ul>
           </nav>
         </div>
@@ -57,6 +65,7 @@ const Index = () => {
                 height={100}
               />
             </div>
+
             <p className="text-white text-[16px] items-center">
               +998 (90) <span className="text-[20px]">565-85-85</span>
             </p>
@@ -92,12 +101,18 @@ const Index = () => {
                     <Link href="/product">Продукты</Link>
                   </li>
                   <li className="mb-3">Контакты</li>
-                  <li className="mb-3">Оплата и Доставка</li>
+                  <li>
+                    {" "}
+                    <Link href="/delivery">Оплата и Доставка</Link>
+                  </li>
                   <li className="mb-3">
                     {" "}
-                    <Link href="/info">Новости</Link>
+                    <Link href="/news">Новости</Link>
                   </li>
-                  <li className="mb-7">О нас</li>
+                  <li className="mb-7">
+                    {" "}
+                    <Link href="/info">О нас</Link>
+                  </li>
                 </ul>
                 <div className="gap-5">
                   <p className="text-black text-[18px] mb-3 font-medium ">
