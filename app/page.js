@@ -1,7 +1,6 @@
 "use client";
 import Swiper from "@/app/components/swiper";
 import Image from "next/image";
-import ProductList from "./components/product";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
@@ -100,21 +99,25 @@ export default function Home() {
                 className="max-w-[292px] bg-[#FFF] rounded-md relative "
               >
                 <div>
-                  <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
-                    <img
-                      className="mb-5 h-[250px]"
-                      src={item?.image_url ? item.image_url[1] : ""}
-                      alt="nimadir"
-                    />
-                    <FontAwesomeIcon
-                      icon={faHeart}
-                      className="w-[26px] absolute right-[14px] top-[10px] text-red-500 "
-                    />
-                    <h2 className="mb-6 text-[20px] font-medium">
-                      {item.product_name}
-                    </h2>
-                    <p className="text-[20px] font-bold">{item.cost} uzs</p>
-                  </div>
+                  <Link href={`/singl-page?id=${item.product_id}`}>
+                    <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
+                      <img
+                        className="mb-5 h-[250px]"
+                        src={item?.image_url ? item.image_url[0] : ""}
+                        alt="nimadir"
+                      />
+                      <div className="w-[30]  absolute right-[8px] top-[8px] text-red-500 ">
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="w-[30px] h-8"
+                        />
+                      </div>
+                      <h2 className="mb-6 text-[20px] font-medium">
+                        {item.product_name}
+                      </h2>
+                      <p className="text-[20px] font-bold">{item.cost} uzs</p>
+                    </div>
+                  </Link>
                   <Link
                     className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
                     href="/korzinka"
