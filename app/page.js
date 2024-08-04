@@ -94,12 +94,12 @@ export default function Home() {
           </h1>
           <div className="grid  grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-x-[24px] gap-y-8 place-items-center">
             {data?.map((item, index) => (
-              <div
-                key={index}
-                className="max-w-[292px] bg-[#FFF] rounded-md relative "
-              >
-                {" "}
-                <Link href={`/singl-page?id=${item.product_id}`}>
+              <Link href={`/singl-page?id=${item.product_id}`}>
+                <div
+                  key={index}
+                  className="max-w-[292px] bg-[#FFF] rounded-md relative "
+                >
+                  {" "}
                   <div>
                     <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
                       <img
@@ -127,8 +127,8 @@ export default function Home() {
                       <ShoppingCartOutlinedIcon /> Корзина
                     </Link>
                   </div>
-                </Link>
-              </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
