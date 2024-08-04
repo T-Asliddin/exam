@@ -98,8 +98,9 @@ export default function Home() {
                 key={index}
                 className="max-w-[292px] bg-[#FFF] rounded-md relative "
               >
-                <div>
-                  <Link href={`/singl-page?id=${item.product_id}`}>
+                {" "}
+                <Link href={`/singl-page?id=${item.product_id}`}>
+                  <div>
                     <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
                       <img
                         className="mb-5 h-[250px]"
@@ -117,15 +118,16 @@ export default function Home() {
                       </h2>
                       <p className="text-[20px] font-bold">{item.cost} uzs</p>
                     </div>
-                  </Link>
-                  <Link
-                    className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
-                    href="/korzinka"
-                  >
-                    {" "}
-                    <ShoppingCartOutlinedIcon /> Корзина
-                  </Link>
-                </div>
+
+                    <Link
+                      className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
+                      href="/korzinka"
+                    >
+                      {" "}
+                      <ShoppingCartOutlinedIcon /> Корзина
+                    </Link>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
