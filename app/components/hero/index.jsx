@@ -42,7 +42,7 @@ const Index = () => {
                 </div>
               </button>
             </div>
-            <div className="flex-1 ml-5 w-[400px] max-[980px]:w-[250px] max-[825px]:w-[150px]">
+            <div className="flex-1 ml-5 w-[400px] max-[980px]:w-[250px]">
               <Input
                 placeholder="Поиск"
                 suffix={
@@ -56,18 +56,23 @@ const Index = () => {
           </div>
           <div className="flex gap-5">
             <button
-            onClick={() => setOpen(true)} icon={faUser}
+              onClick={() => setOpen(true)}
+              icon={faUser}
               className={
                 open === true
                   ? "w-[50px] bg-[#FBD029] p-4 rounded-[3px]"
                   : "w-[50px] bg-[#F2F2F2] p-4 rounded-[3px]"
               }
             >
-              <FontAwesomeIcon icon={faUser}  />
+              <FontAwesomeIcon icon={faUser} />
             </button>
-            <button className="w-[50px] bg-[#F2F2F2] p-4 rounded-[3px]">
-              <FontAwesomeIcon icon={faHeart} />
-            </button>
+
+            <Link
+              className="w-[50px] bg-[#F2F2F2] p-4 rounded-[3px]"
+              href="/like"
+            >
+              <FontAwesomeIcon icon={faHeart} />{" "}
+            </Link>
 
             <Link
               className={

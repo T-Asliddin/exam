@@ -3,28 +3,89 @@ import Swiper from "@/app/components/swiper";
 import Image from "next/image";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
 import product from "@/service/product.service";
+import like from "@/service/like.service";
 import { useEffect, useState } from "react";
+import { getAccessToken } from "@/helpers/auth-helpers";
+import Modal from "@/app/components/ui/modal";
+
 export default function Home() {
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [likes, setLikes] = useState([]);
+
   const getData = async () => {
     try {
-      const response = await product.get({ page: 1, limit: 10 });
-      if (response.status === 200 && response.data.products !== null) {
-        setData(response.data.products);
+      const productResponse = await product.get({ page: 1, limit: 10 });
+      let likedProducts = [];
+      if (getAccessToken("access_token")) {
+        const likeResponse = await like.get({ page: 1, limit: 10 });
+        if (likeResponse.status === 200 && likeResponse.data.products !== null) {
+          likedProducts = likeResponse.data.products;
+        }
+      }
+  
+      if (productResponse.status === 200 && productResponse.data.products !== null) {
+        const productsWithLikes = productResponse.data.products.map((item) => {
+          item.liked = likedProducts.some(
+            (likedItem) => likedItem.product_id === item.product_id
+          );
+          return item;
+        });
+        setData(productsWithLikes);
       }
     } catch (error) {
       console.log(error);
     }
   };
+  
+
   useEffect(() => {
     getData();
   }, []);
+
+  const handleClick = async (productId) => {
+    if (getAccessToken("access_token")) {
+      try {
+        const updatedData = data.map((item) => {
+          if (item.product_id === productId) {
+            item.liked = !item.liked; 
+          }
+          return item;
+        });
+        setData(updatedData);
+
+        const response = await like.post(productId);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setOpen(true);
+    }
+  };
+
+  // const getLike = async () => {
+  //   try {
+  //     const response = await like.get({ page: 1, limit: 10 });
+  //     console.log(response);
+  //     if (response.status === 200 && response.data.products !== null) {
+  //       setLikes(response.data.products);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getLike();
+  // }, []);
 
   const settings = {
     dots: true,
@@ -36,34 +97,23 @@ export default function Home() {
     autoplaySpeed: 2000,
     cssEase: "linear",
   };
+
   const katolog = [
-    {
-      Name: "Тренажеры",
-      img: "/myach.png",
-    },
-    {
-      Name: "Мячи",
-      img: "/myach.png",
-    },
-    {
-      Name: "Спротивные обуви",
-      img: "/myach.png",
-    },
-    {
-      Name: "Спортивные одежды",
-      img: "/myach.png",
-    },
-    {
-      Name: "Водный спорт",
-      img: "/myach.png",
-    },
-    {
-      Name: "Горный спорт",
-      img: "/myach.png",
-    },
+    { Name: "Тренажеры", img: "/myach.png" },
+    { Name: "Мячи", img: "/myach.png" },
+    { Name: "Спротивные обуви", img: "/myach.png" },
+    { Name: "Спортивные одежды", img: "/myach.png" },
+    { Name: "Водный спорт", img: "/myach.png" },
+    { Name: "Горный спорт", img: "/myach.png" },
   ];
+
+  // const isLiked = (productId) => {
+  //   return likes.some((i) => i.product_id === productId);
+  // };
+
   return (
     <>
+      <Modal open={open} toggle={() => setOpen(false)} />
       <div className="container">
         <div className="mb-[83px] ">
           <Swiper />
@@ -94,25 +144,31 @@ export default function Home() {
           </h1>
           <div className="grid  grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-x-[24px] gap-y-8 place-items-center">
             {data?.map((item, index) => (
-              <Link href={`/singl-page?id=${item.product_id}`}>
-                <div
-                  key={index}
-                  className="max-w-[292px]  bg-[#FFF] rounded-md relative "
-                >
-                  {" "}
+              <div
+                className="max-w-[292px]  bg-[#FFF] rounded-md relative"
+                key={index}
+              >
+                <div className="absolute right-3 top-[8px]">
+                  <FontAwesomeIcon
+                    icon={item.liked ? faHeartSolid : faHeartRegular}
+                    style={{ fontSize: "26px" }}
+                    className={`cursor-pointer ${
+                      item.liked ? "text-red-500" : "text-gray-400"
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleClick(item.product_id);
+                    }}
+                  />
+                </div>
+                <Link href={`/singl-page?id=${item.product_id}`}>
                   <div>
                     <div className="pt-[25px] pr-5 pb-[27px] pl-5 h-[416px]">
                       <div className="w-[242px] h-[250px]">
-                      <img
-                        className="mb-5"
-                        src={item?.image_url ? item.image_url[0] : ""}
-                        alt="nimadir"
-                      />
-                      </div>
-                      <div className="w-[30]  absolute right-[8px] top-[8px] text-red-500 ">
-                        <FontAwesomeIcon
-                          icon={faHeart}
-                          className="w-[30px] h-8"
+                        <img
+                          className="mb-5"
+                          src={item?.image_url ? item.image_url[0] : ""}
+                          alt={item.product_name}
                         />
                       </div>
                       <h2 className="mb-6 text-[20px] font-medium">
@@ -120,17 +176,15 @@ export default function Home() {
                       </h2>
                       <p className="text-[20px] font-bold">{item.cost} uzs</p>
                     </div>
-
                     <Link
-                        className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
-                        href="/korzinka"
-                      >
-                      {" "}
+                      className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
+                      href={`korzinka?id=${item.product_id}`}
+                    >
                       <ShoppingCartOutlinedIcon /> Корзина
                     </Link>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </div>
         </div>
@@ -151,7 +205,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <section>
         <div className="slider-container container bg-white mt-[81px] mb-[80px] py-11 items-center">
           <Slider className="items-center " {...settings}>

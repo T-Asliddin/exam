@@ -12,7 +12,7 @@ const Index = () => {
           <HomeOutlinedIcon />
           <p className="text-[16px] opacity-[0.6]">Главная</p>
           <ArrowForwardIosOutlinedIcon className="w-4 opacity-[0.6]" />
-          <p className="text-[16px] font-medium">Новости</p>
+          <p className="text-[16px] font-medium">О нас</p>
         </div>
             <div className='flex gap-6 mb-[120px]'>
             <div className='bg-white pt-5 pr-[77px] pb-[184px] pl-[37px] rounded-md h-[256px]' >

@@ -5,35 +5,97 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { Button, Input } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "next/link";
 import product from "@/service/product.service";
 import { useEffect, useState } from "react";
+import like from "@/service/like.service";
+import { getAccessToken } from "@/helpers/auth-helpers";
+import Modal from "@/app/components/ui/modal";
+
 function valuetext(value) {
   return `${value}°C`;
 }
+
 const Index = () => {
   const [value, setValue] = useState([20, 37]);
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
+
   const getData = async () => {
     try {
-      const response = await product.get({ page: 1, limit: 10 });
-      if (response.status === 200 && response.data.products !== null) {
-        setData(response.data.products);
+      const productResponse = await product.get({ page: 1, limit: 10 });
+      let likedProducts = [];
+      if (getAccessToken("access_token")) {
+        const likeResponse = await like.get({ page: 1, limit: 10 });
+        if (
+          likeResponse.status === 200 &&
+          likeResponse.data.products !== null
+        ) {
+          likedProducts = likeResponse.data.products;
+        }
+      }
+
+      if (
+        productResponse.status === 200 &&
+        productResponse.data.products !== null
+      ) {
+        const productsWithLikes = productResponse.data.products.map((item) => {
+          item.liked = likedProducts.some(
+            (likedItem) => likedItem.product_id === item.product_id
+          );
+          return item;
+        });
+        setData(productsWithLikes);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
+
+  const handleClick = async (productId) => {
+    if (getAccessToken("access_token")) {
+      try {
+        const updatedData = data.map((item) => {
+          if (item.product_id === productId) {
+            item.liked = !item.liked;
+          }
+          return item;
+        });
+        setData(updatedData);
+
+        const response = await like.post(productId);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setOpen(true);
+    }
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleId = (id) => {
+    const existingIds = JSON.parse(localStorage.getItem("ids")) || [];
+    if (!existingIds.includes(id)) {
+      existingIds.push(id);
+      localStorage.setItem("ids", JSON.stringify(existingIds));
+    }
+  };
+
   return (
     <>
+      <Modal open={open} toggle={() => setOpen(false)} />
       <div>
         <div className="container">
           <div className="flex mt-6 gap-[10px]">
@@ -93,21 +155,34 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="gap-x-6 gap-y-8 flex flex-wrap justify-center mt-5 mb-[50px]  ">
+            <div className="gap-x-6 gap-y-8 flex flex-wrap justify-center mt-5 mb-[50px]">
               {data?.map((item, index) => (
-                <Link key={index} href={`/singl-page?id=${item.product_id}`}>
-                  <div className="max-w-[280px] bg-[#FFF] rounded-md relative">
-                    <div>
-                      <div className="pt-[25px] pr-5 pb-[27px] pl-5 w-[290px] h-[416px]">
-                        <img
-                          className="mb-5 h-[194px]"
-                          src={item?.image_url && item.image_url[0]}
-                          alt={item.product_name || "Product image"}
-                        />
-                        <div className="absolute right-[8px] top-[8px] text-red-500">
-                          <FontAwesomeIcon
-                            icon={faHeart}
-                            className="w-[30px] h-8"
+                <div
+                  className="max-w-[292px] bg-[#FFF] rounded-md relative"
+                  key={index}
+                >
+                  <div className="absolute right-3 top-[8px]">
+                    <FontAwesomeIcon
+                      icon={item.liked ? faHeartSolid : faHeartRegular}
+                      style={{ fontSize: "26px" }}
+                      className={`cursor-pointer ${
+                        item.liked ? "text-red-500" : "text-gray-400"
+                      }`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleClick(item.product_id);
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <Link href={`/singl-page?id=${item.product_id}`}>
+                      <div className="pt-[25px] pr-5 pb-[27px] pl-5 h-[416px]">
+                        <div className="w-[242px] h-[250px]">
+                          <img
+                            className="mb-5"
+                            src={item?.image_url ? item.image_url[0] : ""}
+                            alt={item.product_name}
                           />
                         </div>
                         <h2 className="mb-6 text-[20px] font-medium">
@@ -115,19 +190,19 @@ const Index = () => {
                         </h2>
                         <p className="text-[20px] font-bold">{item.cost} uzs</p>
                       </div>
-                      <Link
-                        className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
-                        href="/korzinka"
-                      >
-                        <ShoppingCartOutlinedIcon /> Корзина
-                      </Link>
-                    </div>
+                    </Link>
+                    <Link
+                      className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
+                      href={`korzinka?id=${item.product_id}`}
+                    >
+                      <ShoppingCartOutlinedIcon /> Корзина
+                    </Link>
                   </div>
-                </Link>
+                </div>
               ))}
 
-              <div>
-                <Button className="bg-[#FFF]   text-[20px] font-medium h-[54px] max-[1100px]:hidden ">
+              <div className="w-full flex justify-center mt-4">
+                <Button className="bg-[#FFF] text-[20px] font-medium w-[924px] h-[54px]">
                   Показать ещё
                 </Button>
               </div>

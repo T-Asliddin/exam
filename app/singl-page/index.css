@@ -1,5 +1,3 @@
-
-  
   .swiper {
     width: 100%;
     height: 100%;
@@ -20,7 +18,7 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit:inherit;
   }
   
 
@@ -62,6 +60,5 @@
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-  }
+    object-fit: inherit;  }
   

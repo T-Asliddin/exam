@@ -10,6 +10,7 @@ import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import comment from "@/service/comment.service";
 import Link from "next/link";
 import Modal from "@/app/components/ui/modal";
+import { getAccessToken } from "@/helpers/auth-helpers";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -28,7 +29,7 @@ const Index = () => {
     try {
       const response = await product.get({ page: 1, limit: 100 });
       if (response.status === 200 && response.data.products !== null) {
-        response?.data?.products?.map((item) => {          
+        response?.data?.products?.map((item) => {
           if (item.product_id === id) {
             setData(item);
           }
@@ -58,38 +59,38 @@ const Index = () => {
   const handleChange = (event) => {
     setText(event.target.value);
   };
-  
-  
+
   const handleSubmit = async () => {
-    const payload={
-      productID:id,
-      message:text
-    }
-    if (localStorage.getItem("access_token")) {
+    const payload = {
+      productID: id,
+      message: text,
+    };
+
+    if (getAccessToken("access_token")) {
       try {
         const response = await comment.post(payload);
-        console.log(response);
+        if (response.status === 201) {
+          // window.location.reload();
+        }
       } catch (error) {
         console.log(error);
       }
-    }else{
-      setOpen(true)
-    }  
-      
-   
+    } else {
+      setOpen(true);
+    }
   };
-
   return (
     <>
-    
-    <Modal open={open} toggle={() => setOpen(false)} />
+      <Modal open={open} toggle={() => setOpen(false)} />
       <div>
         <div className="container">
           <div className="flex mt-6 gap-[10px] mb-9">
             <HomeOutlinedIcon />
             <p className="text-[16px] opacity-[0.6]">Главная</p>
             <ArrowForwardIosOutlinedIcon className="w-4 opacity-[0.6]" />
-            <p className="text-[16px] font-medium">Корзина</p>
+            <p className="text-[16px] opacity-[0.6]">Продукты</p>
+            <ArrowForwardIosOutlinedIcon className="w-4 opacity-[0.6]" />
+            <p className="text-[16px] font-medium">{data.product_name}</p>
           </div>
           <div className="flex justify-between mb-[100px]">
             <div className="max-w-[690px] h-[500px] rounded-md bg-[#fff] ">
@@ -150,7 +151,6 @@ const Index = () => {
               </div>
               <div className="text-[16px]">
                 <p className=" mb-[10px] font-medium">{data.description}</p>
-
                 <h1 className="text-[16px] inline mr-2">Color :</h1>
                 <p className="text-[20px]  inline font-semibold">
                   {data?.color?.join(" ")}
@@ -163,11 +163,10 @@ const Index = () => {
                   {data.cost}{" "}
                   <span className="text-[20px] opacity-[0.8]">uzs</span>
                 </p>
-
                 <div className="mt-10 gap-5 flex">
                   <Link
                     className="bg-[#FBD029] px-[30px] py-[20px]  text-[20px] rounded-[5px] "
-                    href="/korzinka"
+                    href={`korzinka?id=${data.product_id}`}
                   >
                     {" "}
                     <ShoppingCartOutlinedIcon /> Корзина
@@ -238,23 +237,25 @@ const Index = () => {
                           {item?.OwnerID}
                         </h1>
                         <p className="mb-10">{item?.Message}</p>
-                        
                       </div>
                     );
                   }
                 })}
                 <label htmlFor="myTextarea">Your comment:</label>
-                        <textarea
-                          id="myTextarea"
-                          onChange={handleChange}
-                          rows="4"
-                          cols="50"
-                          placeholder="comment"
-                          className="border-[2px] border-solid border-[#FBD029]"
-                        />
-                        <button onClick={handleSubmit} className="bg-[#FBD029] px-[30px] py-[10px]  text-[20px] rounded-[5px]">
-                        Oтправлять
-                        </button>
+                <textarea
+                  id="myTextarea"
+                  onChange={handleChange}
+                  rows="4"
+                  cols="50"
+                  placeholder="comment"
+                  className="border-[2px] border-solid border-[#FBD029]"
+                />
+                <button
+                  onClick={handleSubmit}
+                  className="bg-[#FBD029] px-[30px] py-[10px]  text-[20px] rounded-[5px]"
+                >
+                  Oтправлять
+                </button>
               </div>
             </div>
           </div>

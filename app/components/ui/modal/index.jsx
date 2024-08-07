@@ -9,7 +9,8 @@ import { Button, IconButton, InputAdornment } from "@mui/material";
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signInValidationSChame } from "@/app/utils/validation";
-import auth from "@/service/auth.service"
+import auth from "@/service/auth.service";
+import { saveAccessToken } from "@/helpers/auth-helpers";
 
 const style = {
   position: "absolute",
@@ -33,12 +34,14 @@ export default function BasicModal({ open, toggle }) {
 
   const handleSubmit = async (values) => {
     console.log(values);
-    
+
     try {
       const response = await auth.sigIn(values);
       if (response.status === 200) {
-        localStorage.setItem("access_token", response?.data?.access_token);
-        toggle()
+        console.log(response);
+        saveAccessToken(response.data.access_token);
+        toggle();
+        window.location.reload()
       }
     } catch (error) {}
   };
