@@ -1,11 +1,15 @@
 "use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
+import { Button, IconButton, InputAdornment } from "@mui/material";
 import { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { signInValidationSChame } from "@/app/utils/validation";
+import auth from "@/service/auth.service"
 
 const style = {
   position: "absolute",
@@ -20,76 +24,103 @@ const style = {
 };
 
 export default function BasicModal({ open, toggle }) {
-  const [form, setForm] = useState("");
-  const heandleChange = (e) => {
-    setForm(e.target.value);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const initialValues = {
+    email: "",
+    password: "",
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = {
-      category_name: form,
-    };
-    if (name) {
-      const payload = {
-        category_name: form ? form : name,
-        category_id: id,
-      };
-      try {
-        const response = await category.put(payload);
-        if (response.status === 200) {
-          toggle();
-          window.location.reload();
-        }
-      } catch (error) {}
-    } else {
-      try {
-        const response = await category.create(payload);
-        if (response.status === 201) {
-          toggle();
-          window.location.reload();
-        }
-      } catch (error) {}
-    }
+  const handleSubmit = async (values) => {
+    console.log(values);
+    
+    try {
+      const response = await auth.sigIn(values);
+      if (response.status === 200) {
+        localStorage.setItem("access_token", response?.data?.access_token);
+        toggle()
+      }
+    } catch (error) {}
   };
   return (
     <div>
       <Modal
+        className="pt-[200px]"
         open={open}
         onClose={toggle}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="spring-modal-title"
-            variant="h4"
-            component="h2"
-            className="text-center "
-          >
-            Create Category
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <TextField
-                fullWidth
-                defaultValue={name}
-                required
-                type="text"
-                label="Category"
-                id="name"
-                onChange={heandleChange}
-              />
+          <h1 className="font-semibold text-[36px]">Вход в аккаунт</h1>
 
-              <Button
-                type="submit"
-                fullWidth
-                className=" mt-3"
-                variant="contained"
-              >
-                Submit
-              </Button>
-            </form>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={signInValidationSChame}
+            >
+              {({ isSubmitting }) => (
+                <Form>
+                  <Field
+                    name="email"
+                    type="email"
+                    as={TextField}
+                    label="Eamil"
+                    fullWidth
+                    variant="outlined"
+                    margin="normal"
+                    helperText={
+                      <ErrorMessage
+                        name="email"
+                        component="p"
+                        className="text-[red] text-[15px]"
+                      />
+                    }
+                  />
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    label="Password"
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    helperText={
+                      <ErrorMessage
+                        name="password"
+                        component="p"
+                        className="text-[red] text-[15px]"
+                      />
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => {
+                              setShowPassword(!showPassword);
+                            }}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <p className="flex justify-end mb-[30px]">Забыли пароль ?</p>
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isSubmitting}
+                    fullWidth
+                    className="bg-[#FBD029] px-[10px] py-3 rounded-[5px] mt-5 text-[16px] text-[#000] "
+                  >
+                    {isSubmitting ? "Submitting" : "Войти"}
+                  </Button>
+                </Form>
+              )}
+            </Formik>
           </Typography>
         </Box>
       </Modal>

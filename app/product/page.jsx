@@ -4,11 +4,9 @@ import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutl
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { Button, Input } from "antd";
-import ProductList from "../components/product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import Image from "next/image";
 import Link from "next/link";
 import product from "@/service/product.service";
 import { useEffect, useState } from "react";
@@ -97,37 +95,35 @@ const Index = () => {
 
             <div className="gap-x-6 gap-y-8 flex flex-wrap justify-center mt-5 mb-[50px]  ">
               {data?.map((item, index) => (
-                <div
-                  key={index}
-                  className="max-w-[280px] bg-[#FFF] rounded-md relative "
-                >
-                  <div>
-                    <div className="pt-[25px] pr-5 pb-[27px] pl-5">
-                      <img
-                        className="mb-5 h-[250px]"
-                        src={item?.image_url && item.image_url[0]}
-                        alt="nimadir"
-                      />
-                      <div className="w-[30]  absolute right-[8px] top-[8px] text-red-500 ">
-                      <FontAwesomeIcon
-                        icon={faHeart}
-                        className="w-[30px] h-8"
-                      />
+                <Link key={index} href={`/singl-page?id=${item.product_id}`}>
+                  <div className="max-w-[280px] bg-[#FFF] rounded-md relative">
+                    <div>
+                      <div className="pt-[25px] pr-5 pb-[27px] pl-5 w-[290px] h-[416px]">
+                        <img
+                          className="mb-5 h-[194px]"
+                          src={item?.image_url && item.image_url[0]}
+                          alt={item.product_name || "Product image"}
+                        />
+                        <div className="absolute right-[8px] top-[8px] text-red-500">
+                          <FontAwesomeIcon
+                            icon={faHeart}
+                            className="w-[30px] h-8"
+                          />
+                        </div>
+                        <h2 className="mb-6 text-[20px] font-medium">
+                          {item.product_name}
+                        </h2>
+                        <p className="text-[20px] font-bold">{item.cost} uzs</p>
                       </div>
-                      <h2 className="mb-6 text-[20px] font-medium">
-                        {item.product_name}
-                      </h2>
-                      <p className="text-[20px] font-bold">{item.cost} uzs</p>
+                      <Link
+                        className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
+                        href="/korzinka"
+                      >
+                        <ShoppingCartOutlinedIcon /> Корзина
+                      </Link>
                     </div>
-                    <Link
-                      className="bg-[#FBD029] px-[80px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
-                      href="/korzinka"
-                    >
-                      {" "}
-                      <ShoppingCartOutlinedIcon /> Корзина
-                    </Link>
                   </div>
-                </div>
+                </Link>
               ))}
 
               <div>

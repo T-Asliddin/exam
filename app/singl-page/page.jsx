@@ -2,14 +2,15 @@
 import { useSearchParams } from "next/navigation";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
-import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
-import { Input } from "antd";
+import { useState, useEffect } from "react";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Swiper, SwiperSlide } from "swiper/react";
 import product from "@/service/product.service";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
+import comment from "@/service/comment.service";
 import Link from "next/link";
+import Modal from "@/app/components/ui/modal";
+
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
@@ -17,15 +18,17 @@ import "swiper/css/thumbs";
 import "./index.css";
 
 const Index = () => {
+  const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [data, setData] = useState([]);
+  const [comments, setComments] = useState([]);
   const id = searchParams.get("id");
   const getData = async () => {
     try {
-      const response = await product.get({ page: 1, limit: 10 });
+      const response = await product.get({ page: 1, limit: 100 });
       if (response.status === 200 && response.data.products !== null) {
-        response?.data?.products?.map((item) => {
+        response?.data?.products?.map((item) => {          
           if (item.product_id === id) {
             setData(item);
           }
@@ -38,10 +41,48 @@ const Index = () => {
   useEffect(() => {
     getData();
   }, []);
-  console.log(data);
+  const getComment = async () => {
+    try {
+      const response = await comment.get({ page: 1, limit: 10, id });
+      if (response.status === 200) {
+        setComments(response.data.Comment);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getComment();
+  }, []);
+  const [text, setText] = useState("");
+  const handleChange = (event) => {
+    setText(event.target.value);
+  };
+  
+  
+  const handleSubmit = async () => {
+    const payload={
+      productID:id,
+      message:text
+    }
+    if (localStorage.getItem("access_token")) {
+      try {
+        const response = await comment.post(payload);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }else{
+      setOpen(true)
+    }  
+      
+   
+  };
 
   return (
     <>
+    
+    <Modal open={open} toggle={() => setOpen(false)} />
       <div>
         <div className="container">
           <div className="flex mt-6 gap-[10px] mb-9">
@@ -188,7 +229,33 @@ const Index = () => {
             </div>
             <div>
               <h1 className="text-[32px] font-medium mb-[30px]">Отзыви</h1>
-              <div className="bg-white  max-w-[608px] rounded-lg pt-10 pr-[142px]  pb-[116px] pl-[70px]"></div>
+              <div className="bg-white  w-[608px] rounded-lg pt-10 pr-[142px]  pb-[116px] pl-[70px]">
+                {comments?.map((item, index) => {
+                  if (item.Message !== "") {
+                    return (
+                      <div key={index}>
+                        <h1 className="text-[20px] font-semibold mb-2">
+                          {item?.OwnerID}
+                        </h1>
+                        <p className="mb-10">{item?.Message}</p>
+                        
+                      </div>
+                    );
+                  }
+                })}
+                <label htmlFor="myTextarea">Your comment:</label>
+                        <textarea
+                          id="myTextarea"
+                          onChange={handleChange}
+                          rows="4"
+                          cols="50"
+                          placeholder="comment"
+                          className="border-[2px] border-solid border-[#FBD029]"
+                        />
+                        <button onClick={handleSubmit} className="bg-[#FBD029] px-[30px] py-[10px]  text-[20px] rounded-[5px]">
+                        Oтправлять
+                        </button>
+              </div>
             </div>
           </div>
         </div>

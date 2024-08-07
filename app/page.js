@@ -97,16 +97,18 @@ export default function Home() {
               <Link href={`/singl-page?id=${item.product_id}`}>
                 <div
                   key={index}
-                  className="max-w-[292px] bg-[#FFF] rounded-md relative "
+                  className="max-w-[292px]  bg-[#FFF] rounded-md relative "
                 >
                   {" "}
                   <div>
-                    <div className="pt-[25px] pr-5 pb-[27px] pl-5   ">
+                    <div className="pt-[25px] pr-5 pb-[27px] pl-5 h-[416px]">
+                      <div className="w-[242px] h-[250px]">
                       <img
-                        className="mb-5 h-[250px]"
+                        className="mb-5"
                         src={item?.image_url ? item.image_url[0] : ""}
                         alt="nimadir"
                       />
+                      </div>
                       <div className="w-[30]  absolute right-[8px] top-[8px] text-red-500 ">
                         <FontAwesomeIcon
                           icon={faHeart}
@@ -120,9 +122,9 @@ export default function Home() {
                     </div>
 
                     <Link
-                      className="bg-[#FBD029] px-[85px] py-[15px]  text-[20px] max-[1225px]:px-[90px]"
-                      href="/korzinka"
-                    >
+                        className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
+                        href="/korzinka"
+                      >
                       {" "}
                       <ShoppingCartOutlinedIcon /> Корзина
                     </Link>

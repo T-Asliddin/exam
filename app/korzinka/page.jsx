@@ -1,16 +1,40 @@
 "use client";
-import React from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import Image from "next/image";
 import { useState } from "react";
 import { Input } from "antd";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import product from "@/service/product.service";
+
 
 
 const Index = () => {
-  const [num, setNum] = useState(1);
   const [price, setPrice] = useState(300000);
+  const [num, setNum] = useState(1);
+  const [data, setData] = useState([]);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  const getData = async () => {
+    try {
+      const response = await product.get({ page: 1, limit: 10 });
+      if (response.status === 200 && response.data.products !== null) {
+        response?.data?.products?.map((item) => {
+          if (item.product_id === id) {
+            console.log(item);
+            localStorage.setItem(item)
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   const initialPrice = 300000;
   const handlePlus = () => {
     setNum((prev) => prev + 1);
@@ -22,7 +46,7 @@ const Index = () => {
       setPrice((prev) => prev - initialPrice);
     }
   };
-  const product = [
+  const products = [
     { title: "Гантель виниловая, 2 х 3 кг Гантель ", price: 300000 },
     { title: "Гантель виниловая, 2 х 3 кг Гантель ", price: 300000 },
   ];
@@ -30,6 +54,7 @@ const Index = () => {
   return (
     <>
       <div>
+      
         <div className="container">
           <div className="flex mt-6 gap-[10px] mb-9">
             <HomeOutlinedIcon />
@@ -44,7 +69,7 @@ const Index = () => {
                 <p className="text-[#FF1313] text-[12px]">Очистить все</p>
               </div>
               <div className="gap-y-3 ">
-                {product.map((item, index) => (
+                {products.map((item, index) => (
                   <div
                     key={index}
                     className="max-w-[655px] bg-[#F2F2F2] rounded-lg flex py-5 px-3 gap-y-2 mb-[10px]"

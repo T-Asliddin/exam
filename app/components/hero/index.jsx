@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
@@ -8,11 +8,14 @@ import { faUser, faHeart } from "@fortawesome/free-regular-svg-icons";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Modal from "@/app/components/ui/modal";
 const Index = () => {
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
   return (
     <>
+      <Modal open={open} toggle={() => setOpen(false)} />
       <div className="bg-white">
         <div className="container py-4 flex items-center justify-between">
           <div className="flex items-center gap-10 max-[825px]:gap-1">
@@ -52,8 +55,15 @@ const Index = () => {
             </div>
           </div>
           <div className="flex gap-5">
-            <button className="w-[50px] bg-[#F2F2F2] p-4 rounded-[3px]">
-              <FontAwesomeIcon icon={faUser} />
+            <button
+            onClick={() => setOpen(true)} icon={faUser}
+              className={
+                open === true
+                  ? "w-[50px] bg-[#FBD029] p-4 rounded-[3px]"
+                  : "w-[50px] bg-[#F2F2F2] p-4 rounded-[3px]"
+              }
+            >
+              <FontAwesomeIcon icon={faUser}  />
             </button>
             <button className="w-[50px] bg-[#F2F2F2] p-4 rounded-[3px]">
               <FontAwesomeIcon icon={faHeart} />
@@ -74,8 +84,8 @@ const Index = () => {
             <Link
               className={
                 pathname !== "/korzinka"
-                  ? "flex bg-[#F2F2F2]  p-4   rounded-[3px]  max-[980px]:flex"
-                  : "hidden bg-[#FBD029]  p-4  rounded-[3px]  max-[980px]:hidden"
+                  ? "hidden bg-[#F2F2F2]  p-4   rounded-[3px]  max-[980px]:flex"
+                  : "hidden bg-[#FBD029]  p-4  rounded-[3px]  max-[980px]:flex"
               }
               href="/korzinka"
             >
