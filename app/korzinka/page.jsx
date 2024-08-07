@@ -1,5 +1,4 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
@@ -8,23 +7,21 @@ import { Input } from "antd";
 import product from "@/service/product.service";
 
 const Index = () => {
-  const [price, setPrice] = useState(0);
-  const [num, setNum] = useState(1);
-  const [data, setData] = useState(null);
-  const [dalet, setDalet] = useState(true);
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const [num, setNum] = useState({});
+  const [data, setData] = useState([]);
+  const [itogo, setItogo] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const getData = async () => {
     try {
       const response = await product.get({ page: 1, limit: 10 });
       if (response.status === 200 && response.data.products !== null) {
-        response?.data?.products?.map((item) => {
-          if (item.product_id === id) {
-            setData(item);
-            setPrice(item.cost);
-          }
-        });
+        const ids = JSON.parse(localStorage.getItem("ids")) || [];
+        setItogo(ids.length);
+        const filteredData = response.data.products.filter((item) =>
+          ids.includes(item.product_id)
+        );
+        setData(filteredData);
       }
     } catch (error) {
       console.log(error);
@@ -35,16 +32,52 @@ const Index = () => {
     getData();
   }, []);
 
-  const handlePlus = () => {
-    setNum((prev) => prev + 1);
-    setPrice((prev) => prev + (data ? data.cost : 0));
+  useEffect(() => {
+    if (data.length > 0) {
+      let a = data.reduce(
+        (acc, item) => acc + item.cost * (num[item.product_id] || 1),
+        0
+      );
+      setTotalPrice(a);
+    }
+  }, [data, num]);
+
+  const handlePlus = (productId, productCost) => {
+    setNum((prev) => {
+      const newNum = prev[productId] ? prev[productId] + 1 : 2;
+      return { ...prev, [productId]: newNum };
+    });
+    setTotalPrice((prev) => prev + productCost);
   };
 
-  const handleMinus = () => {
-    if (num > 1) {
-      setNum((prev) => prev - 1);
-      setPrice((prev) => prev - (data ? data.cost : 0));
-    }
+  const handleMinus = (productId, productCost) => {
+    setNum((prev) => {
+      const newNum = prev[productId] > 1 ? prev[productId] - 1 : 1;
+      return { ...prev, [productId]: newNum };
+    });
+    setTotalPrice((prev) => (prev > productCost ? prev - productCost : 0));
+  };
+
+  const handleDalet = () => {
+    localStorage.removeItem("ids");
+    setData([]);
+    setItogo(0);
+    setTotalPrice(0);
+    setNum({});
+  };
+
+  const setCardDalet = (productId) => {
+    const updatedData = data.filter((item) => item.product_id !== productId);
+    setData(updatedData);
+    const updatedIds = updatedData.map((item) => item.product_id);
+    localStorage.setItem("ids", JSON.stringify(updatedIds));
+    setItogo(updatedIds.length);
+    setTotalPrice(
+      updatedData.reduce(
+        (acc, item) => acc + item.cost * (num[item.product_id] || 1),
+        0
+      )
+    );
   };
 
   return (
@@ -61,33 +94,42 @@ const Index = () => {
             <div className="bg-[#fff] rounded-lg pt-5 px-7 max-w-[713px] pb-[66px]">
               <div className="flex items-center justify-between mb-[25px]">
                 <h1 className="text-[24px] font-medium">Ваша корзина</h1>
-                <p onClick={()=>(setDalet(false))} className="text-[#FF1313] cursor-pointer text-[12px]">Очистить все</p>
+                <p
+                  onClick={handleDalet}
+                  className="text-[#FF1313] cursor-pointer text-[12px]"
+                >
+                  Очистить все
+                </p>
               </div>
-              {id && dalet && (
-                <div className="gap-y-3">
+              {data?.map((item) => (
+                <div key={item.product_id} className="gap-y-3">
                   <div className="max-w-[655px] bg-[#F2F2F2] rounded-lg flex py-5 px-3 gap-y-2 mb-[10px]">
                     <img
                       className="block w-[145px]"
-                      src={data?.image_url ? data.image_url[0] : ""}
+                      src={item?.image_url ? item.image_url[0] : ""}
                       alt={data?.product_name || "Product Image"}
                     />
                     <div className="flex gap-[150px] items-start ml-4">
-                      <div>
+                      <div className="w-[300px]">
                         <h1 className="text-[#1F1D14] text-[20px] mb-[30px]">
-                          {data?.product_name}
+                          {item?.product_name}
                         </h1>
                         <div className="flex gap-[10px] items-center">
                           <Image
-                            onClick={handleMinus}
+                            onClick={() =>
+                              handleMinus(item.product_id, item.cost)
+                            }
                             className="w-8 cursor-pointer"
                             src="/-.svg"
                             alt="Minus"
                             width={100}
                             height={100}
                           />
-                          <p>{num}</p>
+                          <p>{num[item.product_id] || 1}</p>
                           <Image
-                            onClick={handlePlus}
+                            onClick={() =>
+                              handlePlus(item.product_id, item.cost)
+                            }
                             className="w-8 cursor-pointer"
                             src="/+.svg"
                             alt="Plus"
@@ -95,7 +137,7 @@ const Index = () => {
                             height={100}
                           />
                           <p className="text-[#000] text-[22px] font-bold">
-                            {price}{" "}
+                            {item.cost * (num[item.product_id] || 1)}
                             <span className="text-[16px] ml-[5px] font-normal">
                               uzs
                             </span>
@@ -103,7 +145,7 @@ const Index = () => {
                         </div>
                       </div>
                       <Image
-                      onClick={()=>(setDalet(false))}
+                        onClick={() => setCardDalet(item.product_id)}
                         className="w-8 cursor-pointer"
                         src="/dalet.svg"
                         alt="Delete"
@@ -113,7 +155,7 @@ const Index = () => {
                     </div>
                   </div>
                 </div>
-              )}
+              ))}
               <p className="text-[#06F] text-[20px] mt-[63px] mb-[18px]">
                 Все информация о доставке
               </p>
@@ -132,9 +174,9 @@ const Index = () => {
                   <p className="text-[20px] font-medium">Сумма:</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="text-[24px] font-semibold">1</p>
+                  <p className="text-[24px] font-semibold">{itogo}</p>
                   <p className="text-[24px] font-semibold">
-                    {price} <span>uzs</span>
+                    {totalPrice} <span>uzs</span>
                   </p>
                 </div>
               </div>

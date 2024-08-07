@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import Box from "@mui/material/Box";
@@ -11,7 +12,6 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "next/link";
 import product from "@/service/product.service";
-import { useEffect, useState } from "react";
 import like from "@/service/like.service";
 import { getAccessToken } from "@/helpers/auth-helpers";
 import Modal from "@/app/components/ui/modal";
@@ -24,6 +24,7 @@ const Index = () => {
   const [value, setValue] = useState([20, 37]);
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
 
   const getData = async () => {
     try {
@@ -58,6 +59,8 @@ const Index = () => {
 
   useEffect(() => {
     getData();
+    const savedCartItems = JSON.parse(localStorage.getItem("ids")) || [];
+    setCartItems(savedCartItems);
   }, []);
 
   const handleClick = async (productId) => {
@@ -85,12 +88,17 @@ const Index = () => {
     setValue(newValue);
   };
 
-  const handleId = (id) => {
-    const existingIds = JSON.parse(localStorage.getItem("ids")) || [];
-    if (!existingIds.includes(id)) {
-      existingIds.push(id);
-      localStorage.setItem("ids", JSON.stringify(existingIds));
-    }
+  const handleCartToggle = (productId) => {
+    setCartItems((prevItems) => {
+      let updatedItems;
+      if (prevItems.includes(productId)) {
+        updatedItems = prevItems.filter((id) => id !== productId);
+      } else {
+        updatedItems = [...prevItems, productId];
+      }
+      localStorage.setItem("ids", JSON.stringify(updatedItems));
+      return updatedItems;
+    });
   };
 
   return (
@@ -191,12 +199,17 @@ const Index = () => {
                         <p className="text-[20px] font-bold">{item.cost} uzs</p>
                       </div>
                     </Link>
-                    <Link
+                    <button
                       className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
-                      href={`korzinka?id=${item.product_id}`}
+                      onClick={() => handleCartToggle(item.product_id)}
                     >
-                      <ShoppingCartOutlinedIcon /> Корзина
-                    </Link>
+                      {cartItems.includes(item.product_id) ? (
+                        <ShoppingCartIcon />
+                      ) : (
+                        <ShoppingCartOutlinedIcon />
+                      )}{" "}
+                      Корзина
+                    </button>
                   </div>
                 </div>
               ))}

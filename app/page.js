@@ -2,6 +2,7 @@
 import Swiper from "@/app/components/swiper";
 import Image from "next/image";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +19,7 @@ import Modal from "@/app/components/ui/modal";
 export default function Home() {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [likes, setLikes] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
   const getData = async () => {
     try {
@@ -26,12 +27,18 @@ export default function Home() {
       let likedProducts = [];
       if (getAccessToken("access_token")) {
         const likeResponse = await like.get({ page: 1, limit: 10 });
-        if (likeResponse.status === 200 && likeResponse.data.products !== null) {
+        if (
+          likeResponse.status === 200 &&
+          likeResponse.data.products !== null
+        ) {
           likedProducts = likeResponse.data.products;
         }
       }
-  
-      if (productResponse.status === 200 && productResponse.data.products !== null) {
+
+      if (
+        productResponse.status === 200 &&
+        productResponse.data.products !== null
+      ) {
         const productsWithLikes = productResponse.data.products.map((item) => {
           item.liked = likedProducts.some(
             (likedItem) => likedItem.product_id === item.product_id
@@ -44,18 +51,32 @@ export default function Home() {
       console.log(error);
     }
   };
-  
 
   useEffect(() => {
     getData();
+    const savedCartItems = JSON.parse(localStorage.getItem("ids")) || [];
+    setCartItems(savedCartItems);
   }, []);
+
+  const handleCartToggle = (productId) => {
+    setCartItems((prevItems) => {
+      let updatedItems;
+      if (prevItems.includes(productId)) {
+        updatedItems = prevItems.filter((id) => id !== productId);
+      } else {
+        updatedItems = [...prevItems, productId];
+      }
+      localStorage.setItem("ids", JSON.stringify(updatedItems));
+      return updatedItems;
+    });
+  };
 
   const handleClick = async (productId) => {
     if (getAccessToken("access_token")) {
       try {
         const updatedData = data.map((item) => {
           if (item.product_id === productId) {
-            item.liked = !item.liked; 
+            item.liked = !item.liked;
           }
           return item;
         });
@@ -145,7 +166,7 @@ export default function Home() {
           <div className="grid  grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-x-[24px] gap-y-8 place-items-center">
             {data?.map((item, index) => (
               <div
-                className="max-w-[292px]  bg-[#FFF] rounded-md relative"
+                className="max-w-[292px] bg-[#FFF] rounded-md relative"
                 key={index}
               >
                 <div className="absolute right-3 top-[8px]">
@@ -161,8 +182,9 @@ export default function Home() {
                     }}
                   />
                 </div>
-                <Link href={`/singl-page?id=${item.product_id}`}>
-                  <div>
+
+                <div>
+                  <Link href={`/singl-page?id=${item.product_id}`}>
                     <div className="pt-[25px] pr-5 pb-[27px] pl-5 h-[416px]">
                       <div className="w-[242px] h-[250px]">
                         <img
@@ -176,14 +198,19 @@ export default function Home() {
                       </h2>
                       <p className="text-[20px] font-bold">{item.cost} uzs</p>
                     </div>
-                    <Link
-                      className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
-                      href={`korzinka?id=${item.product_id}`}
-                    >
-                      <ShoppingCartOutlinedIcon /> Корзина
-                    </Link>
-                  </div>
-                </Link>
+                  </Link>
+                  <button
+                    className="bg-[#FBD029] block text-center py-3 w-full h-[54px]"
+                    onClick={() => handleCartToggle(item.product_id)}
+                  >
+                    {cartItems.includes(item.product_id) ? (
+                      <ShoppingCartIcon />
+                    ) : (
+                      <ShoppingCartOutlinedIcon />
+                    )}{" "}
+                    Корзина
+                  </button>
+                </div>
               </div>
             ))}
           </div>
