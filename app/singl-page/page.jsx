@@ -44,7 +44,7 @@ const Index = () => {
   }, []);
   const getComment = async () => {
     try {
-      const response = await comment.get({ page: 1, limit: 10, id });
+      const response = await comment.get({ page: 1, limit: 100, id });
       if (response.status === 200) {
         setComments(response.data.Comment);
       }
@@ -70,7 +70,7 @@ const Index = () => {
       try {
         const response = await comment.post(payload);
         if (response.status === 201) {
-          // window.location.reload();
+          window.location.reload();
         }
       } catch (error) {
         console.log(error);
