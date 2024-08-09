@@ -1,5 +1,5 @@
 "use client";
-// import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
@@ -20,14 +20,12 @@ import "swiper/css/thumbs";
 import "./index.css";
 
 const Index = () => {
-  const [open, setOpen] = useState(false);
-  // console.log(useLocation());
-  
-  // const searchParams = useSearchParams();
+  const [open, setOpen] = useState(false);gi  
+  const searchParams = useSearchParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [data, setData] = useState([]);
   const [comments, setComments] = useState([]);
-  // const id = searchParams.get("id");
+  const id = searchParams.get("id");
   const getData = async () => {
     try {
       const response = await product.get({ page: 1, limit: 100 });
