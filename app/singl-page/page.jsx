@@ -1,5 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
+import React from 'react';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import { useState, useEffect } from "react";
