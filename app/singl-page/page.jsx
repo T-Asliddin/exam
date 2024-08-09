@@ -1,5 +1,5 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import React from 'react';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
@@ -21,7 +21,7 @@ import "./index.css";
 
 const Index = () => {
   const [open, setOpen] = useState(false);
-  const searchParams = useSearchParams();
+  const searchParams = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [data, setData] = useState([]);
   const [comments, setComments] = useState([]);
