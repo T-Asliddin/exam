@@ -20,7 +20,7 @@ import "swiper/css/thumbs";
 import "./index.css";
 
 const Index = () => {
-  const [open, setOpen] = useState(false);gi  
+  const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [data, setData] = useState([]);
